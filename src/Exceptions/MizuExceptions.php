@@ -4,5 +4,5 @@
 namespace buibr\MizuSms\Exceptions;
 
 
-class MizuExceptions extends \Exceptions {
+class MizuExceptions extends \Exception {
 }

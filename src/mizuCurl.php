@@ -2,6 +2,7 @@
 
 namespace buibr\MizuSms;
 
+use buibr\MizuSms\mizuResponse;
 use buibr\MizuSms\Exceptions\EnvironmentException;
 use buibr\MizuSms\Exceptions\InvalidRequestException;
 
@@ -14,7 +15,7 @@ use buibr\MizuSms\Exceptions\InvalidRequestException;
  * Created:     Tue Apr 02 2019 12:27:02 PM
  *
 **/
-class CurlClient {
+class mizuCurl {
 
     /**
      * For how long the request will be waited.
@@ -48,6 +49,11 @@ class CurlClient {
     private $method;
 
     /**
+     *  
+     */
+    private $body;
+
+    /**
      * Endpoing url
      */
     private $url;
@@ -68,7 +74,7 @@ class CurlClient {
      * @param mixed $body   - post body.
      * @param array $body   - post body.
      */
-    public function __construct( string $url, string $method, array $headers, array $params, $body, int $timeout = self::DEFAULT_TIMEOUT )
+    public function __construct( string $url = null, string $method = null, array $headers = [], array $params =[], $body = null, int $timeout = self::DEFAULT_TIMEOUT )
     {
         $this->url      = $url;
         $this->setHeaders($headers);
@@ -85,7 +91,7 @@ class CurlClient {
      */
     protected function validate()
     {
-        if( \filter_var( $this->url, FILTER_VALIDATE_URL) ){
+        if(!\filter_var( $this->url, FILTER_VALIDATE_URL) ){
             throw new InvalidRequestException("Not valid url");
         }
 
@@ -102,32 +108,32 @@ class CurlClient {
     /**
      *  Make the request
      */
-    public function request( string $url )
+    public function request( $timeout = self::DEFAULT_TIMEOUT )
     {
 
+
         $this->validate();
+
+        //  prepare options for curl
         $this->setOptions();
 
         try 
         {
 
-            if (!$this->$curl = curl_init()) {
+            if (!$this->curl = curl_init()) {
                 throw new EnvironmentException('Unable to initialize cURL');
             }
 
-            if (!curl_setopt_array($this->$curl, $this->curlOpt)) {
-                throw new EnvironmentException(curl_error($this->$curl));
+            if (!curl_setopt_array($this->curl, $this->curlOpt)) {
+                throw new EnvironmentException(curl_error($this->curl));
             }
 
-            if (!$response = curl_exec($this->$curl)) {
-                throw new EnvironmentException(curl_error($this->$curl));
+            if (!$response = curl_exec($this->curl)) {
+                throw new EnvironmentException(curl_error($this->curl));
             }
 
-            print('<pre>');
-            print_r($response);
-            print('</pre>');
-            die;
-
+            return new mizuResponse($this->curl, $response);
+            
         } 
         catch (\ErrorException $e) 
         {
@@ -148,26 +154,24 @@ class CurlClient {
     /**
      * 
      */
-    public function setOptions( array $options ) {
+    private function setOptions( ) {
 
         // static binding 
-        $this->curlOpt[CURLOPT_HEADER] = true;
+        $this->curlOpt[CURLOPT_URL]         = $this->url.$this->params;
+        $this->curlOpt[CURLOPT_HEADER]      = true;
         $this->curlOpt[CURLOPT_RETURNTRANSFER] = true;
-        $this->curlOpt[CURLOPT_INFILESIZE] = Null;
+        $this->curlOpt[CURLOPT_INFILESIZE]  = Null;
         // $this->curlOpt[CURLOPT_HTTPHEADER] = array();
         $this->curlOpt[CURLOPT_TIMEOUT]     = $this->timeout;
 
-        if ($body) {
-            $this->curlOpt[CURLOPT_URL] .= '?' . $body;
-        }
 
-        switch (strtolower(trim($method))) {
+        switch (strtolower(trim($this->method))) {
             case 'get':
                 $this->curlOpt[CURLOPT_HTTPGET] = true;
                 break;
             case 'post':
                 $this->curlOpt[CURLOPT_POST] = true;
-                $this->curlOpt[CURLOPT_POSTFIELDS] = $this->buildQuery($data);
+                $this->curlOpt[CURLOPT_POSTFIELDS] = $this->body;
                 break;
             case 'put':
                 $this->curlOpt[CURLOPT_PUT] = true;
@@ -194,6 +198,17 @@ class CurlClient {
     }
 
     /**
+     *  define the endpoint url;
+     */
+    public function setUrl( $url=null)
+    {
+        if(empty($url))
+            return;
+
+        $this->url = $url;
+    }
+
+    /**
      *  Url query params.
      * @param array $p 
      *  - url query parameters as key=>val
@@ -214,7 +229,7 @@ class CurlClient {
             }
         }
 
-        if(!$this->params)
+        if(!empty($this->params))
         {
             $this->url .= "?";
         }
@@ -242,9 +257,9 @@ class CurlClient {
     {
         $this->body = array();
 
-        $p = $p ?: array();
+        $data = $data ?: array();
 
-        foreach ($p as $key => $value) {
+        foreach ($data as $key => $value) {
             if (is_array($value)) {
                 foreach ($value as $item) {
                     $this->body[] = urlencode((string)$key) . '=' . urlencode((string)$item);
@@ -255,5 +270,16 @@ class CurlClient {
         }
 
         return  $this->body = implode('&', $this->body);
+    }
+
+    /**
+     * 
+     */
+    public function setMethod( $method = null)
+    {
+        if(is_null($method))
+            $this->method = 'get';
+        else
+            $this->method = strtolower(trim($method));
     }
 }

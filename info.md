@@ -11,8 +11,9 @@ apientry=sendsms
 
 Note: You can generate working examples for your server from MManage -> Tools menu -> Configure -> Client Config -> Generate
 API examples menu.
+
 API test (this is the simplest example without authentication requirements):
-<b>http://domain.com/mvapireq/?apientry=apitest1</b>
+?apientry=apitest1
 
 Request user credit if set as public with no apiv2key set (not recommended in production):
 ?apientry=balance&authid=USRNAME
@@ -30,9 +31,8 @@ Initiate phone to phone call:
 ?apientry=p2p&authkey=KEY&authid=USRNAME&authmd5=MD5&anum=PHONE1&bnum=PHONE2
 
 Sending SMS message:
-?apientry=sms&authkey=KEY&authid=USRNAME&authmd5=MD5&anum=PHONE1&bnum=PHONE2
+?apientry=sms&authkey=KEY&authid=USRNAME&authmd5=MD5&anum=PHONE1&bnum=PHONE2&txt=TEXT
 
-&txt=TEXT
 Request rate to destination:
 ?apientry=rating&authkey=KEY&authid=USRNAME&authmd5=MD5&anum=PREFIX_OR_NUMBER
 
