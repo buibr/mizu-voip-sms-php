@@ -1,0 +1,19 @@
+{
+    "name": "buibr/mizu-voip-sms-php",
+    "description": "Send SMS with Mizu VoIP switch",
+    "type": "library",
+    "authors": [
+        {
+            "name": "buibr",
+            "email": "burhan@wflux.pro"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "buibr\\MizuSms\\": "src/"
+        }
+    }
+}
