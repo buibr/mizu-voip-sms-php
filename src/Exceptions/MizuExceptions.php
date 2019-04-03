@@ -1,7 +1,7 @@
 <?php
 
 
-namespace buibr\MizuSms\Exceptions;
+namespace buibr\Mizu\Exceptions;
 
 
 class MizuExceptions extends \Exception {

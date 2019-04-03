@@ -1,9 +1,9 @@
 <?php
 
-namespace buibr\MizuSms;
+namespace buibr\Mizu;
 
-use buibr\MizuSms\mizuResponse;
-use buibr\MizuSms\Exceptions\InvalidConfigurationException;
+use buibr\Mizu\mizuResponse;
+use buibr\Mizu\Exceptions\InvalidConfigurationException;
 
 
 /** 

@@ -1,8 +1,8 @@
 <?php
 
-namespace buibr\MizuSms;
+namespace buibr\Mizu;
 
-use buibr\MizuSms\Exceptions\InvalidResponseException;
+use buibr\Mizu\Exceptions\InvalidResponseException;
 
 
 /** 
