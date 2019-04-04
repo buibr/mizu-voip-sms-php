@@ -35,7 +35,7 @@ class mizuResponse {
 
         $this->data = $body;
         
-        $this->extract( );
+        return $this->extract();
     }
 
 
@@ -53,13 +53,12 @@ class mizuResponse {
         //  
         $this->response = trim(implode(':', $str));
 
-
         if(strtoupper(trim($status)) === 'OK' ) {
-            $this->status = true;
+            return $this->status = true;
         }
 
         if(strtoupper(trim($status)) === 'ERROR' ) {
-            $this->status = false;
+            return $this->status = false;
         }
 
         throw new InvalidResponseException("Unknow response.", 3001);
