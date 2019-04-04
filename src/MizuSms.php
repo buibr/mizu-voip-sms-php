@@ -133,9 +133,13 @@ class mizuSMS {
     /**
      * 
      */
-    public function setMessage( $message )
+    public function setMessage( $message, $raw = false )
     {
-        return $this->message = \rawurlencode($message);
+        if($raw){
+            return $this->message = \rawurlencode($message);
+        }
+
+        return $this->message = \urlencode($message);
     }
 
     /**
