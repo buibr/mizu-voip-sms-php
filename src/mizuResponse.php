@@ -65,5 +65,21 @@ class mizuResponse {
 
     }
 
+    
+    /**
+     * Convert all parameters to array
+     */
+    public function toArray()
+    {
+        $a = [];
+
+        foreach($this as $key=>$val)
+        {
+            $a[$key] = $val;
+        }
+
+        return $a;
+    }
+
 
 }   
