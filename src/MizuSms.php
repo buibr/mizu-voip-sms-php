@@ -60,7 +60,9 @@ class mizuSMS {
      */
     private $message;
 
-
+    /**
+     * 
+     */
     public function __construct( array $attr = [] )
     {
         if( empty($attr) ) {
@@ -92,7 +94,6 @@ class mizuSMS {
         }
     }
 
-
     /**
      * 
      */
@@ -100,7 +101,6 @@ class mizuSMS {
     {
         return $this->$key;
     }
-
 
     /**
      * 
@@ -125,13 +125,19 @@ class mizuSMS {
 
     }
 
+    /**
+     *  Sender of the message.
+     * @param string $sender - maximum 11 characters.
+     */
     public function setSender( $sender )
     {
         return $this->anum = substr($sender,0,11);
     }
 
     /**
-     * 
+     * Set the body of the sms message.
+     * @param string $message - The message to send.
+     * @param boolean $raw - true = \rawurlencode, false \urlencode
      */
     public function setMessage( $message, $raw = false )
     {
@@ -143,7 +149,8 @@ class mizuSMS {
     }
 
     /**
-     *  posile filters for number set it here.
+     *  Filters for number should be put here.
+     * @param string $number - the receiver number.
      */
     public function setRecipient( $number )
     {
@@ -168,15 +175,14 @@ class mizuSMS {
 
         return $a;
     }
-    
 
     /**
      * Send sms to a number.
      * 
      * @param string|int $bnum - number that will receive the sms.\
+     * @param string $message - The message to send.
      * 
      * @return mizuResponse
-     * 
      * @throws ErrorException
      */
     public function send( $bnum, $message )
@@ -184,6 +190,7 @@ class mizuSMS {
 
         $this->setRecipient( $bnum );
         $this->setMessage( $message );
+
         $this->validate();
 
         try
