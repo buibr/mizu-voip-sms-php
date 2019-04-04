@@ -1,14 +1,3 @@
-https://sip27.webvoipphone.com/mvapireq/?
-apientry=sendsms
-&phone1=MIZUTEST
-&phone2=778-838-8668
-&message=
-&authkey=14150857
-&authid=iwb-saas-api-test
-&now=1550662268
-&authpwd=gsdoguh4u54kl5izg34jzf535uzf35
-
-
 Note: You can generate working examples for your server from MManage -> Tools menu -> Configure -> Client Config -> Generate
 API examples menu.
 
