@@ -141,7 +141,7 @@ class mizuSMS {
      */
     public function setMessage( $message, $raw = false )
     {
-        if($raw){
+        if ($raw) {
             return $this->message = \rawurlencode($message);
         }
 
@@ -179,16 +179,16 @@ class mizuSMS {
     /**
      * Send sms to a number.
      * 
-     * @param string|int $bnum - number that will receive the sms.\
+     * @param string|int $receiver - Number that will receive the sms.
      * @param string $message - The message to send.
      * 
      * @return mizuResponse
      * @throws ErrorException
      */
-    public function send( $bnum, $message )
+    public function send( $receiver, $message )
     {
 
-        $this->setRecipient( $bnum );
+        $this->setRecipient( $receiver );
         $this->setMessage( $message );
 
         $this->validate();
@@ -213,10 +213,7 @@ class mizuSMS {
     /**
      * Send sms to a number.
      * 
-     * @param string|int $bnum - number that will receive the sms.\
-     * 
      * @return mizuResponse
-     * 
      * @throws ErrorException
      */
     public function balance( )
