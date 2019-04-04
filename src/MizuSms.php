@@ -56,13 +56,10 @@ class mizuSMS {
     private $bnum;
 
     /**
-     * the bodu of the message.
+     * the body of the message.
      */
     private $message;
 
-    /**
-     * 
-     */
     public function __construct( array $attr = [] )
     {
         if( empty($attr) ) {
@@ -76,9 +73,6 @@ class mizuSMS {
         }
     }
 
-    /**
-     * 
-     */
     public function __set($attr, $val)
     {
         if(\property_exists($this, $attr)) {
@@ -94,16 +88,13 @@ class mizuSMS {
         }
     }
 
-    /**
-     * 
-     */
     public function __get( $key )
     {
         return $this->$key;
     }
 
     /**
-     * 
+     *  Validate the SMS Sending by Mizu
      */
     public function validate()
     {
@@ -217,7 +208,6 @@ class mizuSMS {
             return false;
         }
     }
-    
 
     /**
      * Send sms to a number.
