@@ -139,8 +139,12 @@ class mizuSMS {
      * @param string $message - The message to send.
      * @param boolean $raw - true = \rawurlencode, false \urlencode
      */
-    public function setMessage( $message, $raw = false )
+    public function setMessage( $message, $raw = null )
     {
+        if(is_null($raw)) {
+            return $this->message = $message;
+        }
+
         if ($raw) {
             return $this->message = \rawurlencode($message);
         }
@@ -181,15 +185,20 @@ class mizuSMS {
      * 
      * @param string|int $receiver - Number that will receive the sms.
      * @param string $message - The message to send.
+     * @param boolean $raw - encode to raw or url or no encode (true = \rawurlencode, false = \urlencode, null = no changes)
      * 
      * @return mizuResponse
      * @throws ErrorException
      */
-    public function send( $receiver, $message )
+    public function send( $receiver = null, $message = null, $raw = null )
     {
+        if(!empty($receiver)) {
+            $this->setRecipient( $receiver );
+        }
 
-        $this->setRecipient( $receiver );
-        $this->setMessage( $message );
+        if(!empty($message)) {
+            $this->setMessage( $message , $raw);
+        }
 
         $this->validate();
 
