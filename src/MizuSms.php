@@ -80,7 +80,15 @@ class mizuSMS {
     public function __set($attr, $val)
     {
         if(\property_exists($this, $attr)) {
-            $this->$attr = $val;
+            
+            if($attr === 'anum')
+                $this->setSender($val);
+            
+            elseif($attr === 'message')
+                $this->setMessage($val);
+            
+            else
+                $this->$attr = $val;
         }
     }
 
@@ -117,12 +125,17 @@ class mizuSMS {
 
     }
 
+    public function setSender( $sender )
+    {
+        return $this->anum = substr($sender,0,11);
+    }
+
     /**
      * 
      */
     public function setMessage( $message )
     {
-        $this->message = \rawurlencode($message);
+        return $this->message = \rawurlencode($message);
     }
 
     /**
