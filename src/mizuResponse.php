@@ -34,6 +34,8 @@ class mizuResponse {
         $this->time = curl_getinfo($curl, CURLINFO_TOTAL_TIME);
 
         $this->data = $body;
+        
+        $this->extract( );
     }
 
 
@@ -41,9 +43,9 @@ class mizuResponse {
      * 
      * 
      */
-    public function extract( $body )
+    public function extract( )
     {
-        $str = explode(':', $body);
+        $str = explode(':', $this->data);
 
         //  first caracters devine the status.
         $status     = array_shift($str);
