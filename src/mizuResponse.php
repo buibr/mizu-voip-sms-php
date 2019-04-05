@@ -31,7 +31,6 @@ class mizuResponse {
         $this->code = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
         $this->type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
         $this->time = curl_getinfo($curl, CURLINFO_TOTAL_TIME);
-
         $this->data = $body;
         
         return $this->extract();

@@ -10,14 +10,15 @@ composer requre buibr/budget-sms-php
 
 Example 1:
 ```php
-$budget = new \buibr\Budget\BudgetSMS( [
-    'username'=>'xxx',
-    'userid'=> 'xxx',
-    'handle'=>'xxx',
+$mizu = new \buibr\Mizu\mizuSMS( [
+    'server' => 'the sip server of yours',
+    'authKey'=> 'xxx',
+    'authId'=>'xxx',
+    'authpwd'=>'xxx',
 ]);
 
 //  sender name
-$budget->setSender("Test");
+$budget->setSender("Test"); // sender name
 
 //  add recepient
 $budget->setRecipient('+38971xxxxxx');
@@ -32,19 +33,17 @@ $send = $budget->send();
 
 Example 2:
 ```php
-use buibr\Budget\BudgetSMS;
+use buibr\Mizu\mizuSMS;
 
-$budget = new BudgetSMS( [
-    'username'=>'xxx',
-    'userid'=> 'xxx',
-    'handle'=>'xxx',
-    'from'=>'Test',
-    'price'=> 1, // optional
-    'mccmnc'=> 1, // optional
-    'credit'=> 1, // optional
+$mizu = new mizuSMS( [
+    'server' => 'the sip server of yours',
+    'anum'=>'xxx', // sender name
+    'authKey'=> 'xxx',
+    'authId'=>'xxx',
+    'authpwd'=>'xxx',
 ]);
 
-$send = $budget->send( '+38971xxxxxx', 'message content' );
+$credit = $mizu->balance();
 
 ```
 
@@ -54,22 +53,14 @@ $send = $budget->send( '+38971xxxxxx', 'message content' );
 Success:
 
 ```php
-buibr\Budget\BudgetResponse Object
+buibr\Mizu\mizuResponse Object
 (
     [code] => 200
-    [type] => text/plain; charset=UTF-8
-    [time] => 0.494388
+    [type] => text/plain
+    [time] => 0.417484
     [status] => 1
-    [response] => Array
-        (
-            [transaction] => 76208843
-            [price] => 0.02
-            [time] => 1
-            [mccmnc] => 29401
-            [credit] => 590.5892
-        )
-
-    [data] => OK 76208843 0.02 1 29401 590.5892
+    [response] => $9.8
+    [data] => Your credit is $9.8
 )
 ```
 
@@ -77,13 +68,13 @@ Error:
 
 
 ```php
-buibr\Budget\BudgetResponse Object
+buibr\Mizu\mizuResponse Object
 (
     [code] => 200
-    [type] => text/plain; charset=UTF-8
-    [time] => 0.32309
+    [type] => text/plain
+    [time] => 0.454436
     [status] => 
-    [response] => SMS message text is empty
-    [data] => ERR 2001
+    [response] => auth failed: wrong key xxx NORETRY
+    [data] => ERROR: auth failed: wrong key xxx NORETRY
 )
 ```

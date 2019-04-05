@@ -132,11 +132,11 @@ class mizuSMS {
      */
     public function setMessage( $message, $raw = null )
     {
-        if(is_null($raw)) {
+        if( is_null($raw) ) {
             return $this->message = $message;
         }
 
-        if ($raw) {
+        if( $raw ) {
             return $this->message = \rawurlencode($message);
         }
 
