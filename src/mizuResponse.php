@@ -44,7 +44,21 @@ class mizuResponse {
     public function extract( )
     {
 
-        if(strpos($this->data, ':') > -1)
+        if( strpos($this->data, 'Destination: ') > -1){
+
+            $str = explode(',', trim($this->data));
+
+            $this->response = trim($str[0]);
+
+            return $this->status = true;
+        }
+        elseif(strpos($this->data, 'Your credit is') > -1){
+            
+            $this->response = trim(ltrim($this->data, 'Your credit is'));
+
+            return $this->status = true;
+        }
+        elseif(strpos($this->data, ':') > -1)
         {
             $str = explode(':', $this->data);
 
@@ -63,14 +77,6 @@ class mizuResponse {
             }
 
             throw new InvalidResponseException("Unknow response.", 3001);
-        }
-        else {
-            if(strpos($this->data, 'Your credit is') > -1){
-                
-                $this->response = trim(ltrim($this->data, 'Your credit is'));
-
-                return $this->status = true;
-            }
         }
 
     }

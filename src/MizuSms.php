@@ -172,6 +172,18 @@ class mizuSMS {
     }
 
     /**
+     * Convert all parameters to array
+     */
+    public function toArrayAuth()
+    {
+        $a = [];
+        $a['authKey'] = $this->authKey;
+        $a['authid'] = $this->authId;
+        $a['authpwd'] = $this->authpwd;
+        return $a;
+    }
+
+    /**
      * Send sms to a number.
      * 
      * @param string|int $receiver - Number that will receive the sms.
@@ -236,5 +248,31 @@ class mizuSMS {
         }
     }
 
+    /**
+     *  Get rating to country
+     */
+    public function rating( $phone_number ){
 
+        if(!empty($phone_number)) {
+            $this->setRecipient( $phone_number );
+        }
+
+        $this->validate();
+
+        try
+        {
+            
+            $req = new mizuCurl;
+            $req->setUrl( "https://{$this->server}/{$this->apiPath}/" );
+            $req->setParams( array_merge(['apientry'=>'rating', 'bnum'=>$this->bnum], $this->toArrayAuth()) ) ;
+            
+            return $req->request();
+
+        }
+        catch( \ErrorException $e)
+        {
+            return false;
+        }
+        
+    }
 }
