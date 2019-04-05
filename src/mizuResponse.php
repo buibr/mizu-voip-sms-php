@@ -19,7 +19,6 @@ class mizuResponse {
     public $code;
     public $type;
     public $time;
-
     public $status;
     public $response;
 
@@ -45,23 +44,35 @@ class mizuResponse {
      */
     public function extract( )
     {
-        $str = explode(':', $this->data);
 
-        //  first caracters devine the status.
-        $status     = array_shift($str);
+        if(strpos($this->data, ':') > -1)
+        {
+            $str = explode(':', $this->data);
 
-        //  
-        $this->response = trim(implode(':', $str));
+            //  first caracters devine the status.
+            $status     = array_shift($str);
 
-        if(strtoupper(trim($status)) === 'OK' ) {
-            return $this->status = true;
+            //  
+            $this->response = trim(implode(':', $str));
+
+            if(strtoupper(trim($status)) === 'OK' ) {
+                return $this->status = true;
+            }
+
+            if(strtoupper(trim($status)) === 'ERROR' ) {
+                return $this->status = false;
+            }
+
+            throw new InvalidResponseException("Unknow response.", 3001);
         }
+        else {
+            if(strpos($this->data, 'Your credit is') > -1){
+                
+                $this->response = trim(ltrim($this->data, 'Your credit is'));
 
-        if(strtoupper(trim($status)) === 'ERROR' ) {
-            return $this->status = false;
+                return $this->status = true;
+            }
         }
-
-        throw new InvalidResponseException("Unknow response.", 3001);
 
     }
 
