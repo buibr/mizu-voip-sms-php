@@ -251,7 +251,7 @@ class mizuSMS {
     /**
      *  Get rating to country
      */
-    public function rating( $phone_number ){
+    public function rating( $phone_number = null ){
 
         if(!empty($phone_number)) {
             $this->setRecipient( $phone_number );
