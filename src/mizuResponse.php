@@ -48,13 +48,19 @@ class mizuResponse {
 
             $str = explode(',', trim($this->data));
 
-            $this->response = trim($str[0]);
+            $this->response = [
+                'price'=>trim($str[0])
+            ];
 
             return $this->status = true;
         }
         elseif(strpos($this->data, 'Your credit is') > -1){
             
             $this->response = trim(ltrim($this->data, 'Your credit is'));
+
+            $this->response = [
+                'price'=>trim($str[0])
+            ];
 
             return $this->status = true;
         }
@@ -66,13 +72,14 @@ class mizuResponse {
             $status     = array_shift($str);
 
             //  
-            $this->response = trim(implode(':', $str));
-
+            
             if(strtoupper(trim($status)) === 'OK' ) {
+                $this->response = trim(implode(':', $str));
                 return $this->status = true;
             }
 
             if(strtoupper(trim($status)) === 'ERROR' ) {
+                $this->response = trim(ltrim(ltrim('ERROR',$this->data),':'));
                 return $this->status = false;
             }
 
