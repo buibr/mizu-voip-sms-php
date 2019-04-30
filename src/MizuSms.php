@@ -275,4 +275,28 @@ class mizuSMS {
         }
         
     }
+
+    /**
+     *  Get rating to country
+     */
+    public function apitest( $phone_number = null ){
+
+        $this->validate();
+
+        try
+        {
+            
+            $req = new mizuCurl;
+            $req->setUrl( "https://{$this->server}/{$this->apiPath}/" );
+            $req->setParams( array_merge(['apientry'=>'apitest1', 'bnum'=>$this->bnum], $this->toArrayAuth()) ) ;
+            
+            return $req->request();
+
+        }
+        catch( \ErrorException $e)
+        {
+            return false;
+        }
+        
+    }
 }
