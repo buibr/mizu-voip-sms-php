@@ -16,10 +16,29 @@ use buibr\Mizu\Exceptions\InvalidResponseException;
 **/
 class mizuResponse {
 
+    /**
+     * Request reponse code.
+     */
     public $code;
+
+    /**
+     * Response type format
+     */
     public $type;
+
+    /**
+     * Total time taken for the request to response
+     */
     public $time;
+
+    /**
+     * 
+     */
     public $status;
+
+    /**
+     * 
+     */
     public $response;
 
     public function __construct($curl, $data)
@@ -35,7 +54,6 @@ class mizuResponse {
         
         return $this->extract();
     }
-
 
     /**
      * 
