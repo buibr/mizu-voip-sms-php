@@ -18,16 +18,16 @@ $mizu = new \buibr\Mizu\mizuSMS( [
 ]);
 
 //  sender name
-$budget->setSender("Test"); // sender name
+$mizu->setSender("Test"); // sender name
 
 //  add recepient
-$budget->setRecipient('+38971xxxxxx');
+$mizu->setRecipient('+38971xxxxxx');
 
 //  add message
-$budget->setMessage('Testing the provider');
+$mizu->setMessage('Testing the provider');
 
 //  Send the message 
-$send = $budget->send();
+$send = $mizu->send();
 
 ```
 
