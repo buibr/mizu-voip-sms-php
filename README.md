@@ -1,4 +1,4 @@
-# budget-sms-php
+# mizu-voip-sms-php
 
 <h4>Install with composer</h4>
 
