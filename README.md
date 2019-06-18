@@ -128,7 +128,8 @@ buibr\Mizu\Response\XmlResponse Object
 
 ```
 
-<h4>Error:</h4> 
+<h4>Error:</h4>
+
 ```php
 
 buibr\Mizu\Response\XmlResponse Object
