@@ -68,8 +68,8 @@ class RatingEntry extends \buibr\Mizu\mizuEntry {
      */
     public function extract(\buibr\Mizu\mizuResponse &$response)
     {
+        
         \preg_match('/Destination:/',trim($response->response), $success);
-
         if(!empty($success)){
             $expl = explode(',', trim($response->response));
             $curr = explode(' ', trim($expl[0]));
@@ -95,6 +95,8 @@ class RatingEntry extends \buibr\Mizu\mizuEntry {
 
             return $response;
         }
+
+        return $response;
 
     }
 }

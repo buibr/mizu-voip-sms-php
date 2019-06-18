@@ -32,6 +32,24 @@ class BalanceEntry extends \buibr\Mizu\mizuEntry {
      */
     public function extract(\buibr\Mizu\mizuResponse &$response)
     {
-        $response->response = \trim( \ltrim($response->response, 'Your credit is'));
+        \preg_match('/^Your credit is/',trim($response->response), $success);
+        if(!empty($success)){
+            $mess = trim(str_replace(['Your credit is','OK:'],'', $response->response));
+            $response->response = \trim($mess);
+            return $response;
+        }
+
+        \preg_match('/^ERROR:/', trim($response->response), $errors);
+        if(!empty($errors)){
+            $errors = trim(str_replace(['ERROR:', 'DISPLAY'],'', $response->response));
+            $errors = explode(':', $errors);
+            $response->response = [
+                'type'=> $errors[0],
+                'message' => $errors[1]
+            ];
+            return $response;
+        }
+
+        return $response;
     }
 }

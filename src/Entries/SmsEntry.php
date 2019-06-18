@@ -127,7 +127,6 @@ class SmsEntry extends \buibr\Mizu\mizuEntry {
     {
 
         \preg_match('/^OK/',trim($response->response), $success);
-
         if(!empty($success)){
             $mess = trim(str_replace('OK,','', $response->response));
             $response->response = \trim($mess);

@@ -76,7 +76,27 @@ class CdrEntry extends \buibr\Mizu\mizuEntry {
      */
     public function extract(\buibr\Mizu\mizuResponse &$response)
     {
-        $expl = \explode(':', $response->response);
-        $response->response = \trim($expl[1]);
+        \preg_match('/^OK/',trim($response->response), $success);
+        if(!empty($success)){
+            $mess = trim(str_replace(['OK,','OK:'],'', $response->response));
+            $response->response = \trim($mess);
+
+            return $response;
+        }
+
+        \preg_match('/^ERROR:/', trim($response->response), $errors);
+        if(!empty($errors)){
+            $errors = trim(str_replace(['ERROR:', 'DISPLAY'],'', $response->response));
+            $errors = explode(':', $errors);
+            
+            $response->response = [
+                'type'=> $errors[0],
+                'message' => $errors[1]
+            ];
+
+            return $response;
+        }
+
+        return $response;
     }
 }
