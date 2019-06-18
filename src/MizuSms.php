@@ -25,9 +25,13 @@ class mizuSMS {
      */
     private $holder;
 
+    private $anum;
+    private $bnum;
+    private $message;
+
     public function __construct( array $attr = [] )
     {
-        $this->holder = new \buibr\Mizu\Entries\SmsEntry($attr);
+        $this->holder = new \buibr\Mizu\mizuApi($attr);
     }
 
     /**
@@ -35,22 +39,7 @@ class mizuSMS {
      */
     public function validate()
     {
-        if(empty($this->server)) {
-            throw new InvalidConfigurationException("Server not defined", 1001);
-        }
-
-        if(empty($this->authKey)) {
-            throw new InvalidConfigurationException("Auth key missing.", 1002);
-        }
-
-        if(empty($this->authId)) {
-            throw new InvalidConfigurationException("Auth ID missing.", 1002);
-        }
-
-        if(empty($this->authpwd)) {
-            throw new InvalidConfigurationException("Auth password not set.", 1002);
-        }
-
+        $this->holder->validate();
     }
 
     /**
@@ -59,7 +48,8 @@ class mizuSMS {
      */
     public function setSender( $sender )
     {
-        return $this->anum = substr($sender,0,11);
+        $this->anum = substr($sender,0,11);
+        return $this;
     }
 
     /**
@@ -98,14 +88,7 @@ class mizuSMS {
      */
     public function toArray()
     {
-        $a = [];
-
-        foreach($this as $key=>$val)
-        {
-            $a[$key] = $val;
-        }
-
-        return $a;
+        return $this->holder->toArray();
     }
 
     /**
@@ -113,11 +96,7 @@ class mizuSMS {
      */
     public function toArrayAuth()
     {
-        $a = [];
-        $a['authKey'] = $this->authKey;
-        $a['authid'] = $this->authId;
-        $a['authpwd'] = $this->authpwd;
-        return $a;
+        return $this->holder->toArray();
     }
 
     /**
@@ -132,6 +111,8 @@ class mizuSMS {
      */
     public function send( $receiver = null, $message = null, $raw = null )
     {
+        
+
         if(!empty($receiver)) {
             $this->setRecipient( $receiver );
         }
@@ -140,16 +121,16 @@ class mizuSMS {
             $this->setMessage( $message , $raw);
         }
 
-        $this->validate();
+        $sms = new \buibr\Mizu\Entries\SmsEntry($this->holder);
+        $sms->setRecipient($this->bnum);
+        $sms->setSender($this->anum);
+        $sms->setMessage($this->message);
+        $sms->validate();
 
         try
         {
-            
-            $req = new mizuCurl;
-            $req->setUrl( "https://{$this->server}/{$this->apiPath}/" );
-            $req->setParams( array_merge(['apientry'=>'sms', 'txt'=>$message], $this->toArray()) ) ;
-            
-            return $req->request();
+
+            return $sms->run();
 
         }
         catch( \ErrorException $e)
@@ -166,18 +147,12 @@ class mizuSMS {
      */
     public function balance( )
     {
-
-        $this->validate();
+        $sms = new \buibr\Mizu\Entries\BalanceEntry($this->holder);
+        $sms->validate();
 
         try
         {
-            
-            $req = new mizuCurl;
-            $req->setUrl( "https://{$this->server}/{$this->apiPath}/" );
-            $req->setParams( array_merge(['apientry'=>'balance'], $this->toArray()) ) ;
-            
-            return $req->request();
-
+            return $req->run();
         }
         catch( \ErrorException $e)
         {
@@ -194,7 +169,9 @@ class mizuSMS {
             $this->setRecipient( $phone_number );
         }
 
-        $this->validate();
+        $sms = new \buibr\Mizu\Entries\RatingEntry($this->holder);
+        $sms->setRecipient($this->bnum);
+        $sms->validate();
 
         try
         {
@@ -218,17 +195,12 @@ class mizuSMS {
      */
     public function apitest( $phone_number = null ){
 
-        $this->validate();
-
+        $sms = new \buibr\Mizu\Entries\ApiTest($this->holder);
+        $sms->validate();
+        
         try
-        {
-            
-            $req = new mizuCurl;
-            $req->setUrl( "https://{$this->server}/{$this->apiPath}/" );
-            $req->setParams( array_merge(['apientry'=>'apitest1', 'bnum'=>$this->bnum], $this->toArrayAuth()) ) ;
-            
-            return $req->request();
-
+        {   
+            return $req->run();
         }
         catch( \ErrorException $e)
         {
