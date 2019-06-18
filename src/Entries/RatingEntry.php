@@ -60,9 +60,7 @@ class RatingEntry extends \buibr\Mizu\mizuEntry {
         $request    = $this->makeRequest();
         $response   = $this->makeResponse($request[0], $request[1]);
 
-        $this->extract($response);
-
-        return $response;
+        return $this->extract($response);
     }
 
     /**
@@ -70,14 +68,33 @@ class RatingEntry extends \buibr\Mizu\mizuEntry {
      */
     public function extract(\buibr\Mizu\mizuResponse &$response)
     {
-        $expl = explode(',', $response->response);
-        $curr = explode(' ', trim($expl[0]));
-        $dest = explode(' ', trim($expl[1]));
+        \preg_match('/Destination:/',trim($response->response), $success);
 
-        $response->response = (object)[
-            'price'=> $curr[0],
-            'currency'=> $curr[1],
-            'destination' => $dest[1]
-        ];
+        if(!empty($success)){
+            $expl = explode(',', trim($response->response));
+            $curr = explode(' ', trim($expl[0]));
+            $dest = explode(' ', trim($expl[1]));
+
+            $response->response = (object)[
+                'price'=> $curr[0],
+                'currency'=> $curr[1],
+                'destination' => $dest[1]
+            ];
+
+            return $response;
+        }
+
+        \preg_match('/^ERROR:/', trim($response->response), $errors);
+        if(!empty($errors)){
+            $errors = trim(str_replace(['ERROR:', 'DISPLAY'],'', $response->response));
+            $errors = explode(':', $errors);
+            $response->response = [
+                'type'=> $errors[0],
+                'message' => $errors[1]
+            ];
+
+            return $response;
+        }
+
     }
 }

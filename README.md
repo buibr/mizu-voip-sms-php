@@ -3,78 +3,142 @@
 <h4>Install with composer</h4>
 
 ```terminal
-composer requre buibr/budget-sms-php
+composer requre buibr/mizu-voip-sms-php "^2.0"
 ```
 
-<h4>Usage:</h4> 
+<h4>Usage:</h4>
 
-Example 1:
+We have changed the way we submit the authentication data on this library. Dynamicaly the api settings can be set in 2 ways now:
+Example 1: create new api object with mizuApi settings.
 ```php
-$mizu = new \buibr\Mizu\mizuSMS( [
+$api = new \buibr\Mizu\mizuApi( [
     'server' => 'the sip server of yours',
-    'authKey'=> 'xxx',
-    'authId'=>'xxx',
+    'authkey'=> 'xxx',
+    'authid'=>'xxx',
     'authpwd'=>'xxx',
 ]);
 
-//  sender name
+$mizu = new \buibr\Mizu\Entries\RatingEntry( $api );
+$mizu->run();
+
+```
+
+Example 2: pass data directely to entry with all params
+```php
+
+$api = new \buibr\Mizu\Entries\RatingEntry([
+    'server' => 'the sip server of yours',
+    'authkey'=> 'xxx',
+    'authid'=>'xxx',
+    'authpwd'=>'xxx',
+    'bnum'=>'+389xxxxxx'
+]);
+
+```
+
+
+
+Example 1: Send SMS
+```php
+
+$mizu = new \buibr\Mizu\Entries\SmsEntry( $api );
 $mizu->setSender("Test"); // sender name
+$mizu->setRecipient('+38971xxxxxx'); //  add recepient
+$mizu->setMessage('Testing the provider'); //  add message
 
-//  add recepient
-$mizu->setRecipient('+38971xxxxxx');
-
-//  add message
-$mizu->setMessage('Testing the provider');
-
-//  Send the message 
-$send = $mizu->send();
+//  Response
+$send = $mizu->run();
 
 ```
 
-Example 2:
+Example 2: Get Rating to number.
 ```php
-use buibr\Mizu\mizuSMS;
 
-$mizu = new mizuSMS( [
-    'server' => 'the sip server of yours',
-    'anum'=>'xxx', // sender name
-    'authKey'=> 'xxx',
-    'authId'=>'xxx',
-    'authpwd'=>'xxx',
-]);
+$mizu = new \buibr\Mizu\Entries\RatingEntry( $api );
+$mizu->setRecipient('+38971xxxxxx'); //  add recepient
 
-$credit = $mizu->balance();
+//  Response
+$send = $mizu->run();
 
 ```
 
+Example 3: Balance of the account
+```php
+
+$mizu = new \buibr\Mizu\Entries\BalanceEntry( $api );
+
+//  Response
+$send = $mizu->run();
+
+```
 
 <h4>Response:</h4> 
 
-Success:
-
 ```php
-buibr\Mizu\mizuResponse Object
+
+//  Response Minimal
+$send = $mizu->minimal()->run();
+
+buibr\Mizu\Response\XmlResponse Object
 (
     [code] => 200
-    [type] => text/plain
-    [time] => 0.417484
+    [type] => text/xml
+    [time] => 0.376011
     [status] => 1
-    [response] => $9.8
-    [data] => Your credit is $9.8
+    [response] => stdClass Object
+        (
+            [price] => 0.2
+            [currency] => EUR
+            [destination] => Macedonia-cellular
+        )
+
 )
-```
-
-Error:
 
 
-```php
-buibr\Mizu\mizuResponse Object
+//  Response FULL
+$send = $mizu->full()->run();
+
+buibr\Mizu\Response\XmlResponse Object
 (
     [code] => 200
-    [type] => text/plain
-    [time] => 0.454436
-    [status] => 
-    [response] => auth failed: wrong key xxx NORETRY
-    [data] => ERROR: auth failed: wrong key xxx NORETRY
+    [type] => text/xml
+    [time] => 0.372968
+    [status] => 1
+    [response] => stdClass Object
+        (
+            [price] => 0.2
+            [currency] => EUR
+            [destination] => Macedonia-cellular
+        )
+
+    [length] => 179
+    [request] => GuzzleHttp\Psr7\Response Object
+        (
+            ...
+        )
+    [stats] => GuzzleHttp\TransferStats Object
+        (
+            ...
+        )
 )
+
 ```
+
+<h4>Error:</h4> 
+```php
+
+buibr\Mizu\Response\XmlResponse Object
+(
+    [code] => 200
+    [type] => text/xml
+    [time] => 0.371516
+    [status] => 
+    [response] => Array
+        (
+            [type] => auth failed
+            [message] =>  wrong user or password
+        )
+)
+
+```
+
