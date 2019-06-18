@@ -23,74 +23,11 @@ class mizuSMS {
     /**
      * Server endpoint url for the 
      */
-    private $server;
-
-    /**
-     * 
-     */
-    private $apiPath = 'mvapireq'; // mvapireq, mvstwebsock
-
-    /**
-     * 
-     */
-    private $authKey;
-
-    /**
-     * 
-     */
-    private $authId;
-
-    /**
-     * 
-     */
-    private $authpwd;
-
-    /**
-     *  Sender name.
-     */
-    private $anum;
-
-    /**
-     *  Message receipient number
-     */
-    private $bnum;
-
-    /**
-     * the body of the message.
-     */
-    private $message;
+    private $holder;
 
     public function __construct( array $attr = [] )
     {
-        if( empty($attr) ) {
-            return $attr;
-        }
-
-        foreach($attr as $key=>$val) {
-            if(\property_exists($this, $key)) {
-                $this->$key = $val;
-            }
-        }
-    }
-
-    public function __set($attr, $val)
-    {
-        if(\property_exists($this, $attr)) {
-            
-            if($attr === 'anum')
-                $this->setSender($val);
-            
-            elseif($attr === 'message')
-                $this->setMessage($val);
-            
-            else
-                $this->$attr = $val;
-        }
-    }
-
-    public function __get( $key )
-    {
-        return $this->$key;
+        $this->holder = new \buibr\Mizu\Entries\SmsEntry($attr);
     }
 
     /**

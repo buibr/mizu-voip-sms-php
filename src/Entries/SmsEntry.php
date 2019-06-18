@@ -62,7 +62,7 @@ class SmsEntry extends \buibr\Mizu\mizuEntry {
      */
     public function setRecipient( $number )
     {
-        $this->bnum = $number;
+        $this->bnum = trim($number);
 
         if(empty($this->bnum)) {
             throw new InvalidConfigurationException("Receiver number not set.", 1002);
@@ -78,15 +78,15 @@ class SmsEntry extends \buibr\Mizu\mizuEntry {
     public function validate( ){
         parent::validate();
 
-        if( $this->getApiEntry() === 'sendsms' &&  empty($this->anum)) {
+        if( empty($this->anum) ) {
             throw new InvalidConfigurationException("Please fill the name will apear as from.", 1005);
         }
 
-        if(empty($this->bnum)) {
+        if( empty($this->bnum) ) {
             throw new InvalidConfigurationException("Destination number is missing.", 1006);
         }
 
-        if($this->getApiEntry() === 'sendsms' &&  empty($this->message)) {
+        if( empty($this->message) ) {
             throw new InvalidConfigurationException("Message empty not allowed.", 1007);
         }
     }
@@ -101,7 +101,7 @@ class SmsEntry extends \buibr\Mizu\mizuEntry {
      * @return mizuResponse
      * @throws ErrorException
      */
-    public function send( $receiver = null, $message = null, $raw = null )
+    public function run( $receiver = null, $message = null, $raw = null )
     {
         if(!empty($receiver)) {
             $this->setRecipient( $receiver );
@@ -112,24 +112,22 @@ class SmsEntry extends \buibr\Mizu\mizuEntry {
         }
 
         $this->setApientry('sendsms');
-        
         $this->validate();
+        
+        $request    = $this->makeRequest();
+        $response   = $this->makeResponse($request[0], $request[1]);
 
-        try
-        {
-            $client = new Client();
+        $this->extract($response);
 
-            $res = $client->request( \strtoupper($this->method), $this->getEndpoint(),  [
-                'query'=>$this->getParams()
-            ]);
+        return $response;
+    }
 
-            $response = (string)$res->getBody();
-
-        }
-        catch(\Exception $e){
-            throw new InvalidRequestException($e->getMessage(), $e->getCode());
-        }
-
-        return $this->makeResponse($res, $response, $this->getFormat());
+    /**
+     * Filter the response from the text of message
+     */
+    public function extract(\buibr\Mizu\mizuResponse &$response)
+    {
+        $expl = explode(',', $response->response);
+        $response->response = \trim($expl[1]);
     }
 }

@@ -31,7 +31,7 @@ class mizuEntry extends \buibr\Mizu\mizuApi {
     /**
      *  Do not add full request and response stats class to response.
      */
-    public function withMinimal(){
+    public function minimal(){
         $this->mode = parent::MODE_MINIMAL;
         return $this;
     }
@@ -39,7 +39,7 @@ class mizuEntry extends \buibr\Mizu\mizuApi {
     /**
      *  Do not add full request and response stats class to response.
      */
-    public function withFull(){
+    public function full(){
         $this->mode = parent::MODE_FULL;
         return $this;
     }
@@ -48,8 +48,31 @@ class mizuEntry extends \buibr\Mizu\mizuApi {
     /**
      * 
      */
-    public function withStats(){
+    public function stats(){
         $this->mode = parent::MODE_STATS;
+        return $this;
+    }
+
+    /**
+     * 
+     */
+    public function json(){
+        $this->format = parent::FORMAT_JSON;
+        return $this;
+    }
+
+    /**
+     * 
+     */
+    public function xml(){
+        $this->format = parent::FORMAT_XML;
+        return $this;
+    }
+    /**
+     * 
+     */
+    public function text(){
+        $this->format = parent::FORMAT_TEXT;
         return $this;
     }
 
@@ -75,7 +98,7 @@ class mizuEntry extends \buibr\Mizu\mizuApi {
 
         }
         catch(\Exception $e){
-            throw new InvalidRequestException($e->getMessage(), $e->getCode());
+            throw new \buibr\Mizu\Exceptions\InvalidRequestException($e->getMessage(), $e->getCode());
         }
     }
 
@@ -98,6 +121,40 @@ class mizuEntry extends \buibr\Mizu\mizuApi {
             default:
                 return new \buibr\Mizu\Response\TextResponse($response, $stats, $this->mode);
                 break;
+        }
+            
+    }
+    /**
+     * When requesting to download file we need to se if the file is found or get errors based on the format we set
+     * @param object \GuzzleHttp\Psr7\Response $response
+     * @param object \GuzzleHttp\TransferStats $stats
+     * @return mizuResponse
+     * @throws \buibr\Mizu\Exceptions\InvalidResponseException
+     */
+    public function makeAudioResponse( \GuzzleHttp\Psr7\Response $response, \GuzzleHttp\TransferStats $stats ){
+
+        $content = $response->getHeaderLine('Content-Type');
+
+        \preg_match('/^audio\//', $content, $matches);
+
+
+        if(empty($matches))
+        {
+
+            switch ($this->getFormat()) {
+                case parent::FORMAT_JSON:
+                    return new \buibr\Mizu\Response\JsonResponse($response, $stats, $this->mode);
+                    break;
+                case parent::FORMAT_XML:
+                    return new \buibr\Mizu\Response\XmlResponse($response, $stats, $this->mode);
+                    break;
+                default:
+                    return new \buibr\Mizu\Response\TextResponse($response, $stats, $this->mode);
+                    break;
+            }
+        }
+        else {
+            return new \buibr\Mizu\Response\AudioResponse($response, $stats, $this->mode);
         }
             
     }

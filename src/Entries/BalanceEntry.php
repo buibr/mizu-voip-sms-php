@@ -14,16 +14,24 @@ class BalanceEntry extends \buibr\Mizu\mizuEntry {
      * @return mizuResponse
      * @throws ErrorException
      */
-    public function balance( )
+    public function run( )
     {
-
         $this->setApientry('balance');
-
         $this->validate();
 
-        $response = $this->makeRequest();
+        $request    = $this->makeRequest();
+        $response   = $this->makeResponse($request[0], $request[1]);
 
-        return $this->makeResponse($response[0], $response[1]);
+        $this->extract($response);
+
+        return $response;
     }
 
+    /**
+     * Filter the response from balance 
+     */
+    public function extract(\buibr\Mizu\mizuResponse &$response)
+    {
+        $response->response = \trim( \ltrim($response->response, 'Your credit is'));
+    }
 }

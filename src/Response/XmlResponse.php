@@ -2,27 +2,34 @@
 
 namespace buibr\Mizu\Response;
 
-use GuzzleHttp\Psr7\Response;
-use buibr\Mizu\mizuResponse;
 
-class XmlResponse  extends mizuResponse {
+class XmlResponse  extends \buibr\Mizu\mizuResponse {
 
-    public function __construct(\GuzzleHttp\Psr7\Response $res, \GuzzleHttp\TransferStats $stats){
+    public function __construct(\GuzzleHttp\Psr7\Response &$res, \GuzzleHttp\TransferStats &$stats,  $mode = \buibr\Mizu\mizuApi::MODE_MINIMAL){
 
-        $body = (string)$res->getBody();
+        $this->response = (string)$res->getBody();
 
-        $body = \json_decode($body);
+        #   prevents xml printing errors with not controll.
+        libxml_use_internal_errors(true);
 
-        if(!empty(\json_last_error())){
-            throw new \buibr\Mizu\Exceptions\InvalidResponseException( \json_last_error_msg(), \json_last_error());
+        $xml = \simplexml_load_string($this->response);
+
+        if(!$xml){
+            $errs = \libxml_get_errors();
+            throw new \buibr\Mizu\Exceptions\InvalidResponseException($errs[0]->message);
         }
 
-        $this->response = (string)$body;
+        if($xml->code == 200){
+            $this->status = true;
+        }
+
+        $this->response = ((array)$xml->text)[0];
         $this->code     = $res->getStatusCode();
         $this->type     = $res->getHeader('content-type')[0];
         $this->time     = $stats->getTransferTime();
 
         if($mode === \buibr\Mizu\mizuApi::MODE_FULL){
+            $this->length   = $res->getHeader('Content-Length')[0];
             $this->request  = $res;
             $this->stats    = $stats;
         }
@@ -32,5 +39,5 @@ class XmlResponse  extends mizuResponse {
 
         return $this;
     }
-    
+
 }

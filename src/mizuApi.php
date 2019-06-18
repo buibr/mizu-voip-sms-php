@@ -38,6 +38,11 @@ class mizuApi {
     protected $authmd5;
 
     /**
+     * 
+     */
+    protected $authpwd;
+
+    /**
      *  Sip Server Url
      */
     protected $server;
@@ -50,7 +55,7 @@ class mizuApi {
      /**
      * 
      */
-    public $format = self::FORMAT_JSON;
+    public $format = self::FORMAT_XML;
 
     /**
      * request method.
@@ -118,7 +123,7 @@ class mizuApi {
             throw new InvalidConfigurationException("Auth ID missing.", 1003);
         }
 
-        if(empty($this->authmd5) && (empty($this->authmd5) || empty($this->authsalt) ) ) {
+        if(empty($this->authpwd) && (empty($this->authmd5) || empty($this->authsalt) ) ) {
             throw new InvalidConfigurationException("Auth password not set.", 1004);
         }
 
