@@ -117,9 +117,7 @@ class SmsEntry extends \buibr\Mizu\mizuEntry {
         $request    = $this->makeRequest();
         $response   = $this->makeResponse($request[0], $request[1]);
 
-        $this->extract($response);
-
-        return $response;
+        return $this->extract($response);
     }
 
     /**
@@ -127,7 +125,29 @@ class SmsEntry extends \buibr\Mizu\mizuEntry {
      */
     public function extract(\buibr\Mizu\mizuResponse &$response)
     {
-        $expl = explode(',', $response->response);
-        $response->response = \trim($expl[1]);
+
+        \preg_match('/^OK/',trim($response->response), $success);
+
+        if(!empty($success)){
+            $mess = trim(str_replace('OK,','', $response->response));
+            $response->response = \trim($mess);
+
+            return $response;
+        }
+
+        \preg_match('/^ERROR:/', trim($response->response), $errors);
+        if(!empty($errors)){
+            $errors = trim(str_replace(['ERROR:', 'DISPLAY'],'', $response->response));
+            $errors = explode(':', $errors);
+            
+            $response->response = [
+                'type'=> $errors[0],
+                'message' => $errors[1]
+            ];
+
+            return $response;
+        }
+
+        return $response;
     }
 }
