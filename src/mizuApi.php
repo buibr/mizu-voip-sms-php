@@ -7,6 +7,16 @@ use buibr\Mizu\Exceptions\InvalidConfigurationException;
 
 class mizuApi {
 
+    
+    const FORMAT_JSON   = 'json';
+    const FORMAT_XML    = 'xml';
+    const FORMAT_TEXT   = 'text';
+
+    const MODE_MINIMAL  = 'mini';
+    const MODE_FULL     = 'full';
+    const MODE_STATS    = 'stats';
+
+    
     /**
      * private 
      */
@@ -37,6 +47,11 @@ class mizuApi {
      */
     protected $now;
 
+     /**
+     * 
+     */
+    public $format = self::FORMAT_JSON;
+
     /**
      * request method.
      */
@@ -51,8 +66,12 @@ class mizuApi {
     /**
      *  
      */
-    public function __construct( array $data){
+    public function __construct( $data ){
         $this->now = time();
+
+        if(\is_object($data) && $data instanceof mizuApi){
+            $data = $data->toArray();
+        }
 
         if(empty($data)){
             return $this;
@@ -185,6 +204,22 @@ class mizuApi {
     }
     public function getServer() {
         return $this->server;
+    }
+
+    /**
+     * response format from mizu
+     */
+    public function setFormat($format){
+
+        if(!\in_array($format, [self::FORMAT_JSON, self::FORMAT_TEXT, self::FORMAT_XML])){
+            throw new InvalidConfigException("Unsupported format.");
+        }
+
+        $this->format = $format;
+        
+    }
+    public function getFormat(){
+        return $this->format;
     }
 
 }
