@@ -26,13 +26,15 @@ $mizu->run();
 Example 2: pass data directely to entry with all params
 ```php
 
-$api = new \buibr\Mizu\Entries\RatingEntry([
+$mizu = new \buibr\Mizu\Entries\RatingEntry([
     'server' => 'the sip server of yours',
     'authkey'=> 'xxx',
     'authid'=>'xxx',
     'authpwd'=>'xxx',
     'bnum'=>'+389xxxxxx'
 ]);
+
+$mizu->run();
 
 ```
 
@@ -50,6 +52,8 @@ $mizu->setMessage('Testing the provider'); //  add message
 $send = $mizu->run();
 
 ```
+
+<h4>Requests:</h4> 
 
 Example 2: Get Rating to number.
 ```php
