@@ -152,7 +152,7 @@ class mizuSMS {
 
         try
         {
-            return $req->run();
+            return $sms->run();
         }
         catch( \ErrorException $e)
         {
@@ -175,13 +175,7 @@ class mizuSMS {
 
         try
         {
-            
-            $req = new mizuCurl;
-            $req->setUrl( "https://{$this->server}/{$this->apiPath}/" );
-            $req->setParams( array_merge(['apientry'=>'rating', 'bnum'=>$this->bnum], $this->toArrayAuth()) ) ;
-            
-            return $req->request();
-
+            return $sms->run();
         }
         catch( \ErrorException $e)
         {
