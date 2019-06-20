@@ -194,11 +194,38 @@ class mizuApi {
     /**
      * 
      */
+    public function setAuthPwd($pwd){
+        $this->authpwd = $pwd;
+    }
+    public function getAuthPwd() {
+        return $this->authpwd;
+    }
+
+    /**
+     * 
+     */
     public function setAuthMd5($md5){
         $this->authmd5 = $md5;
     }
     public function getAuthMd5() {
         return $this->authmd5;
+    }
+
+    /**
+     * The following parameters are defined:
+     *   authkey: Defined by the “apiv2key” global config option (optional)
+     *   authid: Account username (but can represent also the user id, name, pincode or did)
+     *   authpwd: Account password in clear text (but can represent also the pin). This should be used only on trusted links such as on the localhost. Otherwise better to use the authmd5 parameter.
+     *   authsalt1: Need to be sent if the authmd5 (below) is used (a short random number or string)
+     *   authsalt2: Need to be sent if the authmd5 (below) and the nonce is used (a short random number or string)
+     *   nonce: Optional. The first 16 character of the server supplied nonce if nonce auth was enabled
+     *   authmd5: authv3_ + MD5(MD5(tU29m + authid + authpwd + authsalt1) + authsalt2 + serversalt + nonce )
+     */
+    public function makeAuthMd5() {
+        $authsalt2 = '';
+        $serversalt = '';
+        $nonce = '';
+        $this->setAuthMd5('authv3_' . MD5(MD5('tU29m' + $this->getAuthId() + $this->getAuthPwd() + $this->getAuthSalt()) + $authsalt2 + $serversalt + $nonce ));
     }
 
     /**

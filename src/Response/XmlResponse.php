@@ -24,7 +24,7 @@ class XmlResponse  extends \buibr\Mizu\mizuResponse {
         }
 
         $this->response = ((array)$xml->text)[0];
-        $this->code     = $res->getStatusCode();
+        $this->code     = ((array)$xml->code)[0];
         $this->type     = $res->getHeader('content-type')[0];
         $this->time     = $stats->getTransferTime();
 
